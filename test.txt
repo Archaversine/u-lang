@@ -1,0 +1,5 @@
+
+(func add [a, b] (builtin#add [a, b]))
+(set res [(add [1, 2])])
+(set res2 [(add [3, var res])])
+

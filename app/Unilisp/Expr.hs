@@ -13,6 +13,7 @@ data Expr = BoolConst     !Bool
           | VarConst      !String
           | ListConst     ![Expr]
           | FuncCallConst !FunctionCall
+          | InfixOp       !Expr !String !Expr
           | ErrorValue    !String
           deriving (Eq, Show)
 

@@ -25,7 +25,7 @@ parseFuncStmt = do
 parseFuncParams :: Parser [String]
 parseFuncParams = do 
     char '['
-    ps <- sepBy parseIdentifier (hspace *> char ',' *> hspace)
+    ps <- sepBy parseIdentifier space
     char ']'
 
     return ps

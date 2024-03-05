@@ -1,5 +1,8 @@
 module Unilisp.Parser.Expr where
 
+import Control.Monad
+
+import Data.Char (isAlphaNum)
 import Data.Functor (($>))
 import Data.Maybe (fromMaybe)
 
@@ -13,6 +16,8 @@ parseExpr = parseBool
         <|> parseString
         <|> parseVarExpr
         <|> parseList
+        <|> parseInfixOp
+        <|> parseFuncCall
 
 parseBool :: Parser Expr
 parseBool = BoolConst <$> choice [ string "True"  $> True 
@@ -45,9 +50,12 @@ parseString = StringConst <$> (char '"' *> manyTill asciiChar (char '"'))
 parseIdentifier :: Parser String
 parseIdentifier = do
     first <- letterChar
-    rest  <- some alphaNumChar
+    rest  <- manyTill alphaNumChar (lookAhead nonAlphaNumChar)
 
     return (first : rest)
+
+nonAlphaNumChar :: Parser () 
+nonAlphaNumChar = void (satisfy (not . isAlphaNum))
 
 parseVarExpr :: Parser Expr 
 parseVarExpr = VarConst <$> parseIdentifier
@@ -69,3 +77,18 @@ parseFuncCall = do
 
     return $ FuncCallConst (FuncCall name args)
 
+parseInfixOp :: Parser Expr 
+parseInfixOp = do 
+    char '(' *> space
+    char '[' *> space
+    op <- some (oneOf "`!@#$%^&*-+=\\|:;\"'<>,./?") <* space
+    char ']' *> space
+
+    e1 <- parseExpr <* space 
+    e2 <- parseExpr <* space
+
+    char ')'
+
+    return (InfixOp e1 op e2)
+    
+    

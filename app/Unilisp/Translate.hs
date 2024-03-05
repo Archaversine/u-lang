@@ -33,19 +33,23 @@ class Language lang where
     mkList :: [Expr] -> String
     mkList = show
 
+    mkInfixOp :: Expr -> String -> Expr -> String 
+    mkInfixOp e1 op e2 = "(" ++ translateExpr @lang e1 ++ " " ++ op ++ " " ++ translateExpr @lang e2 ++ ")"
+
     mkVarDecl  :: String   -> Expr     -> String
     mkFuncCall :: Function -> [Expr  ] -> String
     mkFuncDecl :: Function -> [String] -> [Stmt] -> String
 
     translateExpr :: Expr -> String
     translateExpr = \case
-        BoolConst     x -> mkBool     @lang x
-        IntConst      x -> mkInt      @lang x
-        DoubleConst   x -> mkDouble   @lang x
-        StringConst   x -> mkString   @lang x
-        VarConst      x -> mkVarName  @lang x
-        ListConst     x -> mkList     @lang x
-        FuncCallConst x -> mkFuncCall @lang name ps where FuncCall name ps = x
+        BoolConst     x  -> mkBool     @lang x
+        IntConst      x  -> mkInt      @lang x
+        DoubleConst   x  -> mkDouble   @lang x
+        StringConst   x  -> mkString   @lang x
+        VarConst      x  -> mkVarName  @lang x
+        ListConst     x  -> mkList     @lang x
+        FuncCallConst x  -> mkFuncCall @lang name ps where FuncCall name ps = x
+        InfixOp e1 op e2 -> mkInfixOp  @lang e1 op e2
         ErrorValue    x -> errorWithoutStackTrace $ "Parsing Error: " ++ x
 
     translateStmt :: Stmt -> String

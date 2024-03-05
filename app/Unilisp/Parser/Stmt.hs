@@ -10,6 +10,8 @@ import Unilisp.Translate
 import Unilisp.Parser.Expr 
 import Unilisp.Parser.Types
 
+import Debug.Trace
+
 parseStmt :: Parser Stmt 
 parseStmt = try parseFuncDecl 
         <|> try parseVarDecl 
@@ -19,8 +21,8 @@ parseStmt = try parseFuncDecl
 parseFuncStmt :: Parser Stmt
 parseFuncStmt = do 
     char '('
-    name  <- hspace *> parseIdentifier <* hspace
-    args  <- sepBy parseExpr hspace
+    name  <- space *> parseIdentifier <* space
+    args  <- sepBy parseExpr space
     char ')'
 
     return $ FuncCallStmt (FuncCall name args)
@@ -39,9 +41,11 @@ parseFuncDecl = do
     char '('
     string "func"
 
-    name <- hspace1 *> parseIdentifier
-    ps   <- hspace  *> parseFuncParams
-    body <- hspace  *> sepBy parseStmt hspace1
+    name <- space1 *> parseIdentifier
+    ps   <- space  *> parseFuncParams
+    body <- space  *> sepBy parseStmt space
+
+    char ')'
 
     return (FunctionDecl name ps body)
 
@@ -50,8 +54,8 @@ parseVarDecl = do
     char '('
     string "var"
 
-    name <- hspace1 *> parseIdentifier
-    expr <- hspace  *> parseExpr <* char ')'
+    name <- space *> parseIdentifier
+    expr <- space  *> parseExpr <* char ')'
 
     return (VarDecl name expr)
 

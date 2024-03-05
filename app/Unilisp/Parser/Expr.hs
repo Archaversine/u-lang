@@ -63,7 +63,7 @@ parseVarExpr = VarConst <$> parseIdentifier
 parseList :: Parser Expr
 parseList = do 
     char '['
-    es <- sepBy parseExpr (hspace *> char ',' *> hspace)
+    es <- sepBy parseExpr (space *> char ',' *> space)
     char ']'
 
     return (ListConst es)
@@ -71,8 +71,8 @@ parseList = do
 parseFuncCall :: Parser Expr
 parseFuncCall = do 
     char '('
-    name  <- hspace *> parseIdentifier <* hspace
-    args  <- sepBy parseExpr hspace
+    name  <- space *> parseIdentifier <* space
+    args  <- sepBy parseExpr space
     char ')'
 
     return $ FuncCallConst (FuncCall name args)

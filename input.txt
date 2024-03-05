@@ -1,3 +1,4 @@
 (func add [a b] (return ([+] a b)))
-(var sum (add 1 1))
-(print "Value: " sum)
+
+(var x (add 1 1))
+(print "My value: " x)

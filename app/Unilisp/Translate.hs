@@ -36,6 +36,9 @@ class Language lang where
     mkInfixOp :: Expr -> String -> Expr -> String 
     mkInfixOp e1 op e2 = "(" ++ translateExpr @lang e1 ++ " " ++ op ++ " " ++ translateExpr @lang e2 ++ ")"
 
+    mkReturn :: Expr -> String
+    mkReturn e = "return " ++ translateExpr @lang e
+
     mkVarDecl  :: String   -> Expr     -> String
     mkFuncCall :: Function -> [Expr  ] -> String
     mkFuncDecl :: Function -> [String] -> [Stmt] -> String
@@ -57,6 +60,7 @@ class Language lang where
         FuncCallStmt (FuncCall f ps) -> mkFuncCall @lang f ps
         FunctionDecl f ps b          -> mkFuncDecl @lang f ps b
         VarDecl      v ex            -> mkVarDecl  @lang v ex
+        ReturnExpr   e               -> mkReturn   @lang e
 
     translate :: [Stmt] -> String
     translate = unlines . map (translateStmt @lang)

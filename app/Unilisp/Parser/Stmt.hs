@@ -11,7 +11,10 @@ import Unilisp.Parser.Expr
 import Unilisp.Parser.Types
 
 parseStmt :: Parser Stmt 
-parseStmt = try parseFuncDecl <|> try parseVarDecl <|> parseFuncStmt
+parseStmt = try parseFuncDecl 
+        <|> try parseVarDecl 
+        <|> try parseReturn
+        <|> parseFuncStmt
 
 parseFuncStmt :: Parser Stmt
 parseFuncStmt = do 
@@ -51,3 +54,15 @@ parseVarDecl = do
     expr <- hspace  *> parseExpr <* char ')'
 
     return (VarDecl name expr)
+
+parseReturn :: Parser Stmt 
+parseReturn = do 
+    char '('        *> space
+    string "return" *> space
+
+    expr <- parseExpr <* space
+
+    char ')'
+
+    return (ReturnExpr expr)
+

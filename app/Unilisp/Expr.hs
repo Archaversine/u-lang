@@ -19,12 +19,6 @@ data Expr = BoolConst     !Bool
 
 data FunctionCall = FuncCall !Function ![Expr] deriving (Eq, Show)
 
-set :: String -> Expr
-set = VarConst
-
-instance IsString Expr where 
-    fromString = StringConst
-
 instance Num Expr where
     _ + _ = ErrorValue "Not implemented"
     _ - _ = ErrorValue "Not implemented"

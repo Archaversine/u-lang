@@ -10,13 +10,13 @@ import Unilisp.Expr
 import Unilisp.Parser.Types
 
 parseExpr :: Parser Expr
-parseExpr = parseBool 
-        <|> parseInteger
-        <|> parseDouble
-        <|> parseString
-        <|> parseVarExpr
-        <|> parseList
-        <|> parseInfixOp
+parseExpr = try parseBool 
+        <|> try parseDouble
+        <|> try parseInteger
+        <|> try parseString
+        <|> try parseList
+        <|> try parseInfixOp
+        <|> try parseVarExpr
         <|> parseFuncCall
 
 parseBool :: Parser Expr
@@ -37,9 +37,9 @@ parseDouble :: Parser Expr
 parseDouble = do 
     sign  <- optional (string "-")
     first <- some digitChar 
-    rest  <- optional (char '.' *> some digitChar)
+    rest  <- char '.' *> some digitChar
 
-    let double = fromMaybe "" sign ++ first ++ fromMaybe "" rest
+    let double = fromMaybe "" sign ++ first ++ rest
 
     return $ DoubleConst (read double)
 
